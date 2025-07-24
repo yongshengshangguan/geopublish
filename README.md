@@ -1,8 +1,18 @@
-# geopublish
+# geopublish JAR 工具包
 
-一个基于 Java 11 的命令行工具，支持批量扫描本地 `.shp` 或 `.tif` 文件，并通过 GeoServer REST API 自动发布为 WMS 服务。
+这是一个可以被其他 Java 项目引用的工具类库，用于批量发布本地 `.shp` 或 `.tif` 文件到 GeoServer，并形成 WMS 服务。
 
 ---
+
+## 环境要求
+Java 11+
+
+Maven 3.6+
+
+GeoServer（需开启 REST 接口）
+
+Spring Boot 2.7+
+
 
 ##  项目特点
 
@@ -17,15 +27,32 @@
 
 ## 项目结构
 
-```bash
 geoserver-publisher/
-├── src/
-│   └── main/
-│       ├── java/com/example/geopublish/
-│       │   ├── GeoPublisherApplication.java       # 启动主类
-│       │   ├── client/GeoServerRestClient.java    # 封装 REST API 调用
-│       │   ├── service/ShpPublisher.java          # Shapefile 发布
-│       │   ├── service/TifPublisher.java          # GeoTIFF 发布
-│       │   └── util/FileScanner.java              # 目录文件扫描器
-│       └── resources/application.properties       # 可选配置文件
-├── pom.xml
+├── com.sgtools.geopublish/
+│   ├── GeoPublisher.java            # 对外暴露的主类
+│   ├── client/GeoServerRestClient.java  # REST请求封装
+│   ├── service/ShpPublisher.java    # 发布 SHP 的实现
+│   ├── service/TifPublisher.java    # 发布 TIF 的实现
+│   └── util/FileScanner.java        # 文件扫描工具类
+└── resources/
+└──（无配置文件，依赖调用方传参）
+
+## 使用方法
+mvn clean install
+
+然后在其他项目中添加依赖：
+<dependency>
+<groupId>com.sgtools</groupId>
+<artifactId>geoserver-publisher</artifactId>
+<version>1.0.0</version>
+</dependency>
+
+### 使用示例
+
+GeoPublisher publisher = new GeoPublisher("http://localhost:8080/geoserver", "admin", "geoserver");
+
+// 发布所有 Shapefile 文件
+publisher.publishShapefiles("my_workspace", "D:/data/shapefiles", true);
+
+// 发布所有 GeoTIFF 文件
+publisher.publishTiffFiles("my_workspace", "D:/data/tiff", false);

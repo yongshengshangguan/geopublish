@@ -1,6 +1,7 @@
 package com.sgtools.geopublish.service;
 
 import com.sgtools.geopublish.client.GeoServerRestClient;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -14,15 +15,19 @@ public class ShpPublisher {
         this.client = client;
     }
 
-    public void publish(File shpFile, boolean overwrite) throws Exception {
-        String layerName = shpFile.getName().replace(".shp", "");
+    public void publish(String workspace, File shpFile, boolean overwrite) throws Exception {
+        String layerName = shpFile.getName().replaceFirst("\\.shp$", "");
         File zipFile = zipShapefile(shpFile);
-        client.uploadShp(layerName, zipFile, overwrite);
+        boolean success = client.uploadShp(workspace, layerName, zipFile, overwrite);
+        if (!success) {
+            throw new RuntimeException("上传失败: " + shpFile.getName());
+        }
+        zipFile.delete();
     }
 
     private File zipShapefile(File shpFile) throws Exception {
         File dir = shpFile.getParentFile();
-        String baseName = shpFile.getName().replace(".shp", "");
+        String baseName = shpFile.getName().replaceFirst("\\.shp$", "");
         File zip = new File(dir, baseName + ".zip");
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zip))) {
             for (String ext : new String[]{".shp", ".shx", ".dbf", ".prj"}) {
