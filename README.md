@@ -47,7 +47,7 @@ publisher.publishShapefiles("my_workspace", "D:/data/shapefiles", true);
 publisher.publishTiffFiles("my_workspace", "D:/data/tiff", false);
 
 
-## 📦 项目结构
+## 项目结构
 
 ```bash
 geoserver-publisher/
