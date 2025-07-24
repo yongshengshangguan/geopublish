@@ -25,17 +25,6 @@ Spring Boot 2.7+
 
 ---
 
-## 项目结构
-
-geoserver-publisher/
-├── com.sgtools.geopublish/
-│   ├── GeoPublisher.java            # 对外暴露的主类
-│   ├── client/GeoServerRestClient.java  # REST请求封装
-│   ├── service/ShpPublisher.java    # 发布 SHP 的实现
-│   ├── service/TifPublisher.java    # 发布 TIF 的实现
-│   └── util/FileScanner.java        # 文件扫描工具类
-└── resources/
-└──（无配置文件，依赖调用方传参）
 
 ## 使用方法
 mvn clean install
@@ -56,3 +45,20 @@ publisher.publishShapefiles("my_workspace", "D:/data/shapefiles", true);
 
 // 发布所有 GeoTIFF 文件
 publisher.publishTiffFiles("my_workspace", "D:/data/tiff", false);
+
+
+## 📦 项目结构
+
+```bash
+geoserver-publisher/
+├── src/
+│   └── main/
+│       ├── java/com/sgtools/geopublish/
+│       │   ├── GeoPublisherApplication.java       # Spring Boot 启动类
+│       │   ├── controller/PublishController.java  # 接口入口
+│       │   ├── service/ShpPublisher.java          # Shapefile 发布逻辑
+│       │   ├── service/TifPublisher.java          # GeoTIFF 发布逻辑
+│       │   ├── client/GeoServerRestClient.java    # 封装 REST API 请求
+│       │   └── util/FileScanner.java              # 本地目录扫描
+│       └── resources/application.yml              # Spring Boot 配置文件
+├── pom.xml
